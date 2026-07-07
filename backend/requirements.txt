@@ -1,0 +1,14 @@
+# Core RAG dependencies (same as root requirements.txt)
+python-dotenv
+langchain
+langchain-core
+langchain-community
+langchain-mistralai
+langchain-text-splitters
+chromadb
+pypdf
+
+# Web server
+fastapi
+uvicorn[standard]
+python-multipart
