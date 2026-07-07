@@ -1,40 +1,33 @@
 # DocSense
 
-DocSense is a small RAG app for asking questions about PDF documents. It uses LangChain, Mistral, Chroma, a FastAPI backend, and a React frontend.
+DocSense is a document Q&A app built with LangChain, Mistral, Chroma, FastAPI, and React.
 
-## What’s in the repo
+## Project layout
 
-- `main.py` for the CLI version
-- `database_create.py` for one-time PDF ingestion
-- `backend/` for the FastAPI API
-- `frontend/` for the React chat UI
-- `dev.py` to start both web servers together
+- `main.py` runs the CLI version.
+- `database_create.py` builds the Chroma index from a PDF.
+- `backend/` contains the API server.
+- `frontend/` contains the React chat UI.
+- `dev.py` starts the backend and frontend together.
 
 ## Setup
 
-1. Create a `.env` file in the project root and add your Mistral API key.
+Create a `.env` file in the project root:
 
 ```env
 MISTRAL_API_KEY=your_key_here
 ```
 
-2. Install Python dependencies.
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 pip install -r backend/requirements.txt
-```
-
-3. Install the frontend dependencies once.
-
-```bash
 cd frontend
 npm install
 ```
 
-## Run it
-
-### Web app
+## Run
 
 From the project root:
 
@@ -42,17 +35,15 @@ From the project root:
 python dev.py
 ```
 
-That starts the FastAPI backend on `http://localhost:8000` and the React UI on `http://localhost:3000`.
+That starts the API on `http://localhost:8000` and the UI on `http://localhost:3000`.
 
-### CLI
+If you want the CLI instead:
 
 ```bash
 python main.py
 ```
 
-### First PDF upload
-
-Use the upload button in the web app, or run:
+To build the initial index manually:
 
 ```bash
 python database_create.py
@@ -60,39 +51,12 @@ python database_create.py
 
 ## API
 
-### `POST /chat`
-
-Request body:
-
-```json
-{ "question": "What is cloud computing?" }
-```
-
-Response shape:
-
-```json
-{
-  "answer": "...",
-  "sources": [
-    {
-      "content": "...",
-      "page": 4,
-      "source": "Cloud_Computing_Exam_Notes.pdf"
-    }
-  ]
-}
-```
-
-### `POST /upload`
-
-Send a PDF as `multipart/form-data` with a `file` field. The upload replaces the current Chroma index.
-
-### `GET /health`
-
-Returns a simple status response and whether the vector store is loaded.
+- `POST /chat` asks a question and returns an answer plus source chunks.
+- `POST /upload` uploads a PDF and rebuilds the Chroma index.
+- `GET /health` returns backend status.
 
 ## Notes
 
-- The embedding model must match between ingestion and querying.
-- The source list is shown in the UI so answers are easier to verify.
-- If you upload a new PDF, the previous index is replaced.
+- The embedding model must match between ingestion and query time.
+- Uploading a new PDF replaces the current index.
+- The UI shows the source chunks used for each answer.
